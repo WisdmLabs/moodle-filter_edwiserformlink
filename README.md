@@ -1,6 +1,19 @@
+This filter is required for the Edwiser Forms Free plugin. 
+
+Edwiser Forms is your go-to Forms solution for your Moodle. 
+With Edwiser Forms, you can create multipurpose forms in Moodle, without knowing a single line of code.
+
+
+STEPS FOR INSTALLATION
+1 - Install Edwiser Forms Free Plugin;
+2 - Install (this filter plugin) Edwiser Forms Embedder Plugin;
+
+Follow below mentioned guide for instructions.
+
 Installation Guide & Documentation
 ==================================
-You can view the documentation by following this link https://edwiser.org/edwiser-forms-documentation/
+You can view the documentation by following this link https://docs.google.com/document/d/1DfNx1x6en2tAwExv7oCCBbpLbjHP9qcUCedbPe_wlAc/edit?usp=sharing
+
 Version :
 v1.0.0 - Plugin Released
 v1.0.1 - Bug Fixes
@@ -8,7 +21,6 @@ v1.0.1 - Bug Fixes
 
 Plugin Description
 ==================
-Edwiser Forms is your go-to Forms solution for your Moodle. With Edwiser Forms, you can create multipurpose forms in Moodle, without knowing a single line of code. 
 
 *Edwiser Forms comes packed with the following features:
 *Drag & Drop Form Builder(Pro Feature)
