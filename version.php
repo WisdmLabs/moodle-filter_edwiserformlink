@@ -27,9 +27,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2018101500;
+$plugin->version  = 2022032300;
 $plugin->requires = 2016052314;  // Requires this Moodle version.
-$plugin->release  = '1.0.0';
+$plugin->release  = '2.0.0';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->component= 'filter_edwiserformlink';
-$plugin->dependencies = array('local_edwiserform' => 2018101500);
+
+// $plugin->dependencies = array('local_edwiserform' => 2017110800);
