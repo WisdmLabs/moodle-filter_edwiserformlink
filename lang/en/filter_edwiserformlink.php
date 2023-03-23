@@ -28,3 +28,4 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['filtername'] = "Edwiser Forms Linker";
+$string['pluginname'] = "Edwiser Forms Link";
