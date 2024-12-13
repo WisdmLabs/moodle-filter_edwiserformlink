@@ -14,23 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace filter_edwiserformlink;
+
 /**
- * This filter provides automatic linking to
- * Form builder entries, aliases and categories when
- * found inside every Moodle text.
+ * Class text_filter
  *
- * @package     filter_edwiserformlink
- * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @author      Yogesh Shirsath
+ * @package    filter_edwiserformlink
+ * @copyright  2024 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version  = 2024121200;
-$plugin->requires = 2016052314;  // Requires this Moodle version.
-$plugin->release  = '2.0.1';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->component= 'filter_edwiserformlink';
-
-// $plugin->dependencies = array('local_edwiserform' => 2017110800);
+class text_filter extends \moodle_text_filter {
+    use CommonFilterTrait;
+}
