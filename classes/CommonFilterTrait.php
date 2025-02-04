@@ -67,7 +67,12 @@ trait CommonFilterTrait {
             $strings = $stringmanager->load_component_strings('local_edwiserform', 'en');
             $PAGE->requires->strings_for_js(array_keys($strings), 'local_edwiserform');
             $PAGE->requires->js(new \moodle_url('https://www.google.com/recaptcha/api.js'));
-            $PAGE->requires->js_call_amd('local_edwiserform/render_form', 'init');
+            $sitekey = get_config('local_edwiserform', 'google_recaptcha_sitekey');
+            if (trim($sitekey) == '') {
+                $sitekey = 'null';
+            }
+            $PAGE->requires->js_call_amd('local_edwiserform/render_form', 'init', array($sitekey));
+            $PAGE->requires->data_for_js('sitekey', $sitekey);
             $tags = $this->filter_tags($tags);
             foreach ($tags as $form) {
                 $container = "<div class='edwiserform-root-container'>
