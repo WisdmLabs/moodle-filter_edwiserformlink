@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2025021300;
 $plugin->requires = 2016052314;  // Requires this Moodle version.
-$plugin->release  = '2.0.2';
+$plugin->release  = '2.0.3';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->component= 'filter_edwiserformlink';
 
