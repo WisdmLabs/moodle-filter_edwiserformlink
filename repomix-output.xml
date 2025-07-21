@@ -1,0 +1,1923 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+The content has been processed where content has been compressed (code blocks are separated by ⋮---- delimiter).
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Content has been compressed - code blocks are separated by ⋮---- delimiter
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+.cursor/
+  rules/
+    mdc-rules-organization.md
+    moodle-ajax-and-js-integration.mdc
+    moodle-configuration-management.mdc
+    moodle-database-patterns.mdc
+    moodle-error-handling.mdc
+    moodle-events-and-callbacks.mdc
+    moodle-file-and-media-handling.mdc
+    moodle-internationalization.mdc
+    moodle-performance-optimization.mdc
+    moodle-php-coding-standards.mdc
+    moodle-plugin-structure.mdc
+    moodle-scheduled-tasks.mdc
+    moodle-security-practices.mdc
+    moodle-testing-and-quality.mdc
+    moodle-web-services-and-api.mdc
+classes/
+  CommonFilterTrait.php
+  text_filter.php
+lang/
+  en/
+    filter_edwiserformlink.php
+context.md
+createContext.js
+filter.php
+qaconfig
+README.md
+version.php
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".cursor/rules/mdc-rules-organization.md">
+---
+description: Instructs Cursor to always create new MDC rules in .cursor/rules as separate files.
+globs: []
+alwaysApply: true
+---
+
+# MDC Rules Organization
+
+## Rule Creation Guidelines
+
+When creating new MDC (Model Context) rules for this project:
+
+1. **Location**: Always create new MDC rules in the `.cursor/rules/` folder
+2. **File Structure**: Each rule should be a separate file with a descriptive name
+3. **Naming Convention**: Use kebab-case for file names (e.g., `api-documentation.md`, `code-review-standards.md`)
+4. **File Extension**: Use `.md` extension for all rule files
+5. **Content Format**: Write rules in clear, actionable language with specific instructions
+
+## File Organization
+
+- Keep related rules together but separate
+- Use descriptive file names that clearly indicate the rule's purpose
+- Avoid creating monolithic rule files - prefer multiple focused files
+- Consider grouping related rules in subdirectories if the rules folder grows large
+
+## Example Rule Structure
+
+```markdown
+# Rule Name
+
+## Purpose
+Brief description of what this rule accomplishes
+
+## Instructions
+Specific, actionable instructions for the AI
+
+## Examples
+Concrete examples of how to apply the rule
+
+## Exceptions
+Any cases where this rule doesn't apply (if applicable)
+```
+
+## Maintenance
+
+- Review and update rules regularly
+- Remove obsolete rules
+- Consolidate overlapping rules when appropriate
+- Keep rules focused and specific to avoid conflicts
+</file>
+
+<file path=".cursor/rules/moodle-ajax-and-js-integration.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle AJAX and JavaScript Integration
+---
+
+# Moodle AJAX and JavaScript Integration
+
+## Purpose
+Ensure robust, secure, and maintainable integration between PHP and JavaScript in Moodle.
+
+## Instructions
+- Use `$PAGE->requires->js()` to load JS modules
+- Use AMD modules for all new JS code
+- Use Moodle's AJAX API for server communication
+- Validate and sanitize all AJAX inputs in PHP
+- Return JSON responses using Moodle's output functions
+- Use `sesskey` for CSRF protection in AJAX requests
+- Document JS/PHP interfaces and data contracts
+
+## Examples
+```php
+// File: ./amd/src/myplugin.js
+define(['jquery'], function($) {
+    // JS code here
+});
+
+// File: ./ajax.php
+require_sesskey();
+$param = required_param('id', PARAM_INT);
+echo json_encode(['result' => 'ok']);
+```
+
+## Exceptions
+- Legacy JS may use YUI modules
+- Inline JS allowed only for critical fixes
+</file>
+
+<file path=".cursor/rules/moodle-configuration-management.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle Configuration Management
+---
+
+# Moodle Configuration Management
+
+## Purpose
+Ensure all configuration is managed securely and consistently using Moodle's APIs.
+
+## Instructions
+- Use `get_config()` and `set_config()` for plugin and site settings
+- Store configuration in the `config_plugins` or `config` tables
+- Provide admin settings pages using `settings.php`
+- Validate and sanitize all configuration values
+- Document all configuration options
+- Avoid storing sensitive data in plain text
+- Use Moodle's capabilities to restrict access to settings
+
+## Examples
+```php
+// File: ./settings.php
+$settings->add(new admin_setting_configtext('myplugin/apikey', get_string('apikey', 'myplugin'), '', ''));
+
+// File: ./lib.php
+$apikey = get_config('myplugin', 'apikey');
+```
+
+## Exceptions
+- Temporary runtime settings may use $SESSION
+</file>
+
+<file path=".cursor/rules/moodle-database-patterns.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Moodle Database Patterns
+
+## Purpose
+Ensure consistent and efficient database interactions using Moodle's database abstraction layer.
+
+## Instructions
+When working with databases in Moodle PHP code, follow these patterns:
+
+1. **Use Moodle's Database API**: Always use `$DB` global object, never direct MySQL functions
+2. **Parameterized Queries**: Use `$DB->get_records_sql()` with parameters for complex queries
+3. **Simple Queries**: Use `$DB->get_records()`, `$DB->get_record()`, `$DB->insert_record()`, etc.
+4. **Transactions**: Use `$DB->transaction_start()` and `$DB->transaction_commit()` for multi-table operations
+5. **Error Handling**: Always check return values and use `$DB->get_last_error()` for debugging
+6. **Performance**: Use `$DB->set_debug()` sparingly, prefer logging for production
+7. **Table Prefix**: Never hardcode table names, use `$CFG->prefix` if needed
+8. **Record Objects**: Return stdClass objects, not arrays for consistency
+
+## Examples
+
+```php
+<?php
+// File: ./includes/database_example.php
+
+/**
+ * Example of proper database usage in Moodle
+ */
+function get_user_courses($userid) {
+    global $DB;
+    
+    // Simple query with conditions
+    $courses = $DB->get_records('enrol', ['userid' => $userid], 'timecreated DESC');
+    
+    // Complex query with parameters
+    $sql = "SELECT c.*, e.timecreated 
+            FROM {course} c 
+            JOIN {enrol} e ON c.id = e.courseid 
+            WHERE e.userid = :userid 
+            AND e.status = :status";
+    
+    $params = [
+        'userid' => $userid,
+        'status' => ENROL_USER_ACTIVE
+    ];
+    
+    $courses = $DB->get_records_sql($sql, $params);
+    
+    // Transaction example
+    $transaction = $DB->start_delegated_transaction();
+    try {
+        $DB->insert_record('user_log', [
+            'userid' => $userid,
+            'action' => 'course_access',
+            'time' => time()
+        ]);
+        
+        $DB->update_record('user', [
+            'id' => $userid,
+            'lastaccess' => time()
+        ]);
+        
+        $transaction->allow_commit();
+    } catch (Exception $e) {
+        $transaction->rollback($e);
+        throw $e;
+    }
+    
+    return $courses;
+}
+```
+
+## Exceptions
+- Direct SQL may be needed for complex reporting queries
+- Third-party plugins may use different database patterns
+</file>
+
+<file path=".cursor/rules/moodle-error-handling.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Moodle Error Handling
+
+## Purpose
+Ensure consistent and proper error handling across all Moodle PHP code for better debugging and user experience.
+
+## Instructions
+When implementing error handling in Moodle PHP code, follow these practices:
+
+1. **Use Moodle Exceptions**: Use `moodle_exception` and specific exception types
+2. **Parameter Validation**: Use `required_param()`, `optional_param()` with proper validation
+3. **Debugging**: Use `debugging()` for development, `error_log()` for critical errors
+4. **User Feedback**: Provide meaningful error messages using language strings
+5. **Graceful Degradation**: Handle errors gracefully without breaking the user experience
+6. **Logging**: Use Moodle's logging system for important events and errors
+7. **Context Information**: Include relevant context in error messages
+8. **Error Recovery**: Implement recovery mechanisms where possible
+
+## Examples
+
+```php
+<?php
+// File: ./includes/error_handling_example.php
+
+/**
+ * Example of proper error handling in Moodle
+ */
+function process_user_action($userid, $action) {
+    global $DB, $USER;
+    
+    try {
+        // Parameter validation
+        $userid = required_param('userid', PARAM_INT);
+        $action = required_param('action', PARAM_ALPHA);
+        
+        // Validate user exists
+        $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
+        
+        // Check permissions
+        if (!has_capability('moodle/user:edit', context_user::instance($userid))) {
+            throw new moodle_exception('nopermission', 'core');
+        }
+        
+        // Perform action with error handling
+        switch ($action) {
+            case 'update':
+                $result = update_user_profile($userid);
+                break;
+            case 'delete':
+                $result = delete_user_data($userid);
+                break;
+            default:
+                throw new moodle_exception('invalidaction', 'core');
+        }
+        
+        // Log successful action
+        \core\event\user_action_performed::create([
+            'objectid' => $userid,
+            'relateduserid' => $USER->id,
+            'other' => ['action' => $action]
+        ])->trigger();
+        
+        return $result;
+        
+    } catch (dml_exception $e) {
+        // Database errors
+        debugging('Database error: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        throw new moodle_exception('databaseerror', 'core');
+        
+    } catch (moodle_exception $e) {
+        // Re-throw Moodle exceptions
+        throw $e;
+        
+    } catch (Exception $e) {
+        // Unexpected errors
+        error_log('Unexpected error in process_user_action: ' . $e->getMessage());
+        throw new moodle_exception('unknownerror', 'core');
+    }
+}
+
+/**
+ * Graceful error handling with user feedback
+ */
+function display_user_data($userid) {
+    try {
+        $userdata = get_user_data($userid);
+        echo format_string($userdata->name);
+        
+    } catch (moodle_exception $e) {
+        // Show user-friendly error
+        echo html_writer::div(
+            get_string('error_loading_user', 'core'),
+            'alert alert-warning'
+        );
+        
+        // Log detailed error for administrators
+        debugging('Error loading user data: ' . $e->getMessage(), DEBUG_DEVELOPER);
+    }
+}
+```
+
+## Exceptions
+- Critical system errors may require different handling approaches
+- Third-party integrations may have specific error handling requirements
+</file>
+
+<file path=".cursor/rules/moodle-events-and-callbacks.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle Events and Callbacks
+---
+
+# Moodle Events and Callbacks
+
+## Purpose
+Ensure extensibility and modularity by using Moodle's event and callback systems.
+
+## Instructions
+- Use Moodle's event API to trigger and observe events
+- Define custom events in `db/events.php`
+- Use `core\event` classes for core events
+- Register observers in `db/events.php`
+- Use callbacks for plugin extensibility (e.g., `myplugin_callback()`)
+- Document all custom events and callbacks
+- Avoid direct function calls between plugins; use events or callbacks
+
+## Examples
+```php
+// File: ./db/events.php
+$observers = [
+    [
+        'eventname'   => '\core\event\user_loggedin',
+        'callback'    => 'local_myplugin_user_loggedin',
+    ],
+];
+
+// File: ./lib.php
+function local_myplugin_user_loggedin($event) {
+    // Handle user login event
+}
+```
+
+## Exceptions
+- Performance-critical code may use direct calls with justification
+</file>
+
+<file path=".cursor/rules/moodle-file-and-media-handling.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle File and Media Handling
+---
+
+# Moodle File and Media Handling
+
+## Purpose
+Ensure secure, efficient, and consistent handling of files and media in Moodle.
+
+## Instructions
+- Use Moodle's File API for all file operations
+- Store files in Moodle's file storage, not the local filesystem
+- Validate file types, sizes, and permissions
+- Use file pickers for user uploads
+- Use `get_file_storage()` and related APIs for file access
+- Sanitize file names and paths
+- Document file areas and usage
+- Use context IDs for file scoping
+
+## Examples
+```php
+// File: ./lib.php
+$fs = get_file_storage();
+$files = $fs->get_area_files($contextid, 'mod_myplugin', 'attachment', $itemid);
+```
+
+## Exceptions
+- Temporary files may be stored in temp directories
+</file>
+
+<file path=".cursor/rules/moodle-internationalization.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle Internationalization (i18n)
+---
+
+# Moodle Internationalization (i18n)
+
+## Purpose
+Ensure all user-facing text is translatable and follows Moodle's i18n best practices.
+
+## Instructions
+- Use `get_string()` for all user-visible text
+- Store language strings in `lang/en/` and other language folders
+- Use descriptive, unique string identifiers
+- Support pluralization using Moodle's string API
+- Avoid hardcoding text in PHP, JS, and templates
+- Test plugins with multiple languages and RTL support
+- Document new strings for translators
+
+## Examples
+```php
+// File: ./lang/en/myplugin.php
+$string['welcome'] = 'Welcome to My Plugin!';
+
+// File: ./index.php
+echo get_string('welcome', 'myplugin');
+```
+
+## Exceptions
+- Debug or log messages may remain in English
+- Third-party libraries may not be translatable
+</file>
+
+<file path=".cursor/rules/moodle-performance-optimization.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Moodle Performance Optimization
+
+## Purpose
+Ensure PHP code follows Moodle performance best practices for optimal execution speed and resource usage.
+
+## Instructions
+When writing PHP code for Moodle, implement these performance optimizations:
+
+1. **Database Queries**: Minimize database calls, use bulk operations when possible
+2. **Caching**: Use Moodle's caching API (`cache::make()`) for expensive operations
+3. **Memory Management**: Avoid loading large datasets into memory, use pagination
+4. **File Operations**: Use Moodle's file API, avoid direct file system access
+5. **Session Handling**: Minimize session writes, use `$SESSION` sparingly
+6. **Output Buffering**: Use `ob_start()` and `ob_end_flush()` for large outputs
+7. **Error Logging**: Use `debugging()` instead of `error_log()` in production
+8. **Plugin Loading**: Lazy load plugins and dependencies when possible
+
+## Examples
+
+```php
+<?php
+// File: ./includes/performance_example.php
+
+/**
+ * Example of performance-optimized code
+ */
+function get_optimized_course_data($courseids) {
+    global $DB;
+    
+    // Use caching for expensive operations
+    $cache = cache::make('core', 'course_data');
+    $cachekey = 'course_data_' . md5(serialize($courseids));
+    
+    $cacheddata = $cache->get($cachekey);
+    if ($cacheddata !== false) {
+        return $cacheddata;
+    }
+    
+    // Bulk database query instead of multiple queries
+    list($insql, $params) = $DB->get_in_or_equal($courseids, SQL_PARAMS_NAMED);
+    $sql = "SELECT c.*, COUNT(e.userid) as enrolled_users
+            FROM {course} c
+            LEFT JOIN {enrol} e ON c.id = e.courseid
+            WHERE c.id $insql
+            GROUP BY c.id";
+    
+    $courses = $DB->get_records_sql($sql, $params);
+    
+    // Cache the result for 5 minutes
+    $cache->set($cachekey, $courses, 300);
+    
+    return $courses;
+}
+
+/**
+ * Efficient file handling
+ */
+function process_files_efficiently($contextid) {
+    $fs = get_file_storage();
+    
+    // Use file iterator for large file sets
+    $files = $fs->get_area_files($contextid, 'mod_assign', 'submission');
+    
+    foreach ($files as $file) {
+        if ($file->is_directory()) {
+            continue;
+        }
+        
+        // Process file without loading entire content into memory
+        $content = $file->get_content();
+        // Process content in chunks if large
+    }
+}
+```
+
+## Exceptions
+- Development environments may use different performance settings
+- Debugging may require bypassing some optimizations
+</file>
+
+<file path=".cursor/rules/moodle-php-coding-standards.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+name: Moodle PHP Coding Standards
+---
+
+# Moodle PHP Coding Standards
+
+## Purpose
+Ensure consistent PHP coding standards across all Moodle-related PHP files in the project.
+
+## Instructions
+When working with PHP files in this Moodle project, follow these coding standards:
+
+1. **PSR-12 Compliance**: Follow PSR-12 coding standards for all PHP code
+2. **Moodle Coding Style**: Adhere to Moodle's specific coding conventions
+3. **Indentation**: Use 4 spaces for indentation, never tabs
+4. **Line Length**: Keep lines under 132 characters when possible
+5. **Naming Conventions**:
+   - Classes: PascalCase (e.g., `MoodlePlugin`)
+   - Methods: camelCase (e.g., `getUserData()`)
+   - Variables: camelCase (e.g., `$userData`)
+   - Constants: UPPER_CASE (e.g., `MOODLE_VERSION`)
+6. **File Structure**: Always include proper PHP opening tag `<?php` and no closing tag
+7. **Comments**: Use PHPDoc blocks for classes, methods, and functions
+8. **Error Handling**: Use Moodle's exception handling patterns
+
+## Examples
+
+```php
+<?php
+// File: ./includes/classes/moodle_plugin.php
+
+/**
+ * Example Moodle plugin class following coding standards
+ *
+ * @package    moodle
+ * @category   core
+ * @copyright  2024 Your Name
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class moodle_plugin {
+    
+    /** @var string Plugin name */
+    private $pluginname;
+    
+    /**
+     * Constructor
+     *
+     * @param string $pluginname The name of the plugin
+     */
+    public function __construct($pluginname) {
+        $this->pluginname = $pluginname;
+    }
+    
+    /**
+     * Get plugin data
+     *
+     * @return array Plugin data
+     * @throws moodle_exception If plugin not found
+     */
+    public function getPluginData() {
+        if (empty($this->pluginname)) {
+            throw new moodle_exception('pluginnotfound', 'core');
+        }
+        
+        return [
+            'name' => $this->pluginname,
+            'version' => MOODLE_VERSION
+        ];
+    }
+}
+```
+
+## Exceptions
+- Legacy code may not follow all standards but should be updated when modified
+- Third-party libraries should maintain their original coding style
+</file>
+
+<file path=".cursor/rules/moodle-plugin-structure.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Moodle Plugin Structure
+
+## Purpose
+Ensure proper organization and structure for Moodle plugins following Moodle's plugin architecture.
+
+## Instructions
+When creating or modifying Moodle plugins, follow these structural guidelines:
+
+1. **Plugin Types**: Follow Moodle's plugin type conventions (mod, block, local, auth, etc.)
+2. **Directory Structure**: Use standard Moodle plugin directory layout
+3. **Version File**: Always include `version.php` with proper version information
+4. **Language Files**: Include language strings in `lang/en/` directory
+5. **Capabilities**: Define capabilities in `db/access.php` or `db/capabilities.php`
+6. **Database Schema**: Use `db/install.xml` for database tables
+7. **Settings**: Use `settings.php` for admin settings
+8. **Lib Functions**: Place helper functions in `lib.php`
+9. **Classes**: Use `classes/` directory for PHP classes
+10. **Templates**: Use `templates/` directory for renderable templates
+
+## Examples
+
+```php
+<?php
+// File: ./version.php
+
+defined('MOODLE_INTERNAL') || die();
+
+$plugin->component = 'local_myplugin';
+$plugin->version = 2024120100;
+$plugin->requires = 2022112800; // Moodle 4.1
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '1.0.0';
+```
+
+```php
+<?php
+// File: ./db/access.php
+
+defined('MOODLE_INTERNAL') || die();
+
+$capabilities = [
+    'local/myplugin:manage' => [
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => [
+            'manager' => CAP_ALLOW
+        ]
+    ]
+];
+```
+
+```php
+<?php
+// File: ./lib.php
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Get plugin data
+ *
+ * @param int $userid User ID
+ * @return stdClass Plugin data
+ */
+function local_myplugin_get_data($userid) {
+    global $DB;
+    
+    return $DB->get_record('local_myplugin_data', ['userid' => $userid]);
+}
+```
+
+## Exceptions
+- Custom plugins may have different requirements based on functionality
+- Legacy plugins may not follow all conventions but should be updated when possible
+</file>
+
+<file path=".cursor/rules/moodle-scheduled-tasks.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle Scheduled Tasks and Background Processing
+---
+
+# Moodle Scheduled Tasks and Background Processing
+
+## Purpose
+Ensure long-running and periodic operations are handled using Moodle's scheduled_task API.
+
+## Instructions
+- Define scheduled tasks in `db/tasks.php`
+- Extend `core\task\scheduled_task` for custom tasks
+- Use `adhoc_task` for one-off background jobs
+- Document task frequency and purpose
+- Use locking to prevent concurrent execution
+- Log task execution and errors
+- Test tasks in both CLI and web environments
+
+## Examples
+```php
+// File: ./db/tasks.php
+$tasks = [
+    [
+        'classname' => '\mod_myplugin\task\sync',
+        'blocking'  => 0,
+        'minute'    => 'R',
+        'hour'      => '*',
+        'day'       => '*',
+        'month'     => '*',
+        'dayofweek' => '*',
+    ],
+];
+```
+
+## Exceptions
+- Short operations may use synchronous execution
+</file>
+
+<file path=".cursor/rules/moodle-security-practices.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Moodle Security Practices
+
+## Purpose
+Ensure all PHP code follows Moodle security best practices to prevent vulnerabilities and maintain data integrity.
+
+## Instructions
+When writing PHP code for Moodle, implement these security practices:
+
+1. **Input Validation**: Always validate and sanitize user input using Moodle's validation functions
+2. **SQL Injection Prevention**: Use parameterized queries with `$DB->get_records_sql()` or `$DB->execute()`
+3. **XSS Prevention**: Use `format_string()` and `format_text()` for output, never output raw user data
+4. **CSRF Protection**: Include `require_sesskey()` in forms and actions that modify data
+5. **Capability Checks**: Always check user capabilities before performing actions
+6. **File Upload Security**: Validate file types, sizes, and use `moodle_exception` for errors
+7. **Session Security**: Use Moodle's session management, never manipulate `$_SESSION` directly
+8. **Password Handling**: Never store passwords in plain text, use Moodle's password hashing
+
+## Examples
+
+```php
+<?php
+// File: ./includes/security_example.php
+
+/**
+ * Example of secure form processing
+ */
+function process_user_data() {
+    global $DB, $USER;
+    
+    // CSRF protection
+    require_sesskey();
+    
+    // Capability check
+    require_capability('moodle/user:editownprofile', context_user::instance($USER->id));
+    
+    // Input validation
+    $userid = required_param('userid', PARAM_INT);
+    $name = required_param('name', PARAM_TEXT);
+    $email = required_param('email', PARAM_EMAIL);
+    
+    // SQL injection prevention
+    $user = $DB->get_record('user', ['id' => $userid], '*', MUST_EXIST);
+    
+    // XSS prevention in output
+    echo format_string($user->firstname);
+    echo format_text($user->description, FORMAT_HTML);
+    
+    // Secure file upload
+    $file = file_get_submitted_draftfileid('userfile');
+    if ($file) {
+        $context = context_user::instance($USER->id);
+        file_save_draft_area_files($file, $context->id, 'user', 'profile', 0);
+    }
+}
+```
+
+## Exceptions
+- Third-party integrations may require different security approaches
+- Legacy code should be updated to follow these practices when modified
+</file>
+
+<file path=".cursor/rules/moodle-testing-and-quality.mdc">
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Moodle Testing and Quality Assurance
+
+## Purpose
+Ensure all PHP code is robust, reliable, and maintainable through comprehensive testing and quality practices.
+
+## Instructions
+- Write unit tests using Moodle's PHPUnit integration for all new code
+- Organize tests in the `tests/` directory of each plugin or component
+- Use data providers for testing multiple scenarios
+- Mock dependencies using Moodle's test helpers
+- Ensure code coverage for critical paths and edge cases
+- Use Behat for acceptance and integration tests where UI is involved
+- Run tests automatically before merging code
+- Fix or skip failing tests only with documented reasons
+
+## Examples
+```php
+// File: ./mod/myplugin/tests/myplugin_test.php
+class mod_myplugin_testcase extends advanced_testcase {
+    public function test_plugin_returns_expected_value() {
+        $this->resetAfterTest(true);
+        $result = myplugin_function();
+        $this->assertEquals('expected', $result);
+    }
+}
+```
+
+## Exceptions
+- Legacy code may be covered by integration tests only
+- Third-party libraries may use their own test suites
+</file>
+
+<file path=".cursor/rules/moodle-web-services-and-api.mdc">
+---
+description:
+globs:
+alwaysApply: false
+---
+---
+name: Moodle Web Services and API Development
+---
+
+# Moodle Web Services and API Development
+
+## Purpose
+Ensure secure, maintainable, and standards-compliant web services and APIs in Moodle.
+
+## Instructions
+- Use Moodle's web service API for exposing functionality
+- Define external functions in `db/services.php` and `externallib.php`
+- Use parameter validation and capability checks in all API endpoints
+- Return data in standard formats (JSON, XML)
+- Document all API endpoints and parameters
+- Use tokens or OAuth2 for authentication
+- Log API usage and errors
+- Version APIs for backward compatibility
+
+## Examples
+```php
+// File: ./db/services.php
+$services = [
+    'myplugin_service' => [
+        'functions' => ['myplugin_get_data'],
+        'restrictedusers' => 0,
+        'enabled' => 1,
+    ],
+];
+
+// File: ./externallib.php
+function myplugin_get_data_parameters() {
+    return new external_function_parameters([
+        'id' => new external_value(PARAM_INT, 'User ID'),
+    ]);
+}
+```
+
+## Exceptions
+- Internal-only APIs may skip authentication with justification
+</file>
+
+<file path="context.md">
+# Project Context: edwiserformlink
+
+Generated: 2025-07-18T06:40:39.603Z
+
+## Directory Structure
+
+```
+├── 📁 .cursor/
+│   ├── 📁 rules/
+│   │   └── 📄 mdc-rules-organization.md
+├── 📁 classes/
+│   ├── 📄 CommonFilterTrait.php
+│   └── 📄 text_filter.php
+├── 📁 lang/
+│   ├── 📁 en/
+│   │   └── 📄 filter_edwiserformlink.php
+├── 📄 README.md
+├── 📄 filter.php
+└── 📄 version.php
+```
+
+## File Contents
+
+### `./classes/CommonFilterTrait.php`
+
+```php
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace filter_edwiserformlink;
+
+/**
+ * Class CommonFilterTrait
+ *
+ * @package    filter_edwiserformlink
+ * @copyright  2024 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+trait CommonFilterTrait {
+    /**
+     * Filter tags and convert to object
+     * @param  array $tags Tags array
+     * @return array       Forms array
+     */
+    private function filter_tags($tags) {
+        $forms = [];
+        for ($i = 0; $i < count($tags[0]); $i++) {
+            $form = new \stdClass;
+            $form->tag = $tags[0][$i];
+            $form->id = $tags[1][$i];
+            $forms[] = $form;
+        }
+        return $forms;
+    }
+
+    /**
+     * Function filter edwiser form tags in content
+     *
+     * @param  string $text    HTML content to process
+     * @param  array  $options options passed to the filters
+     * @return string
+     */
+    public function filter($text, array $options = array()) {
+        global $PAGE, $CFG;
+        preg_match_all(
+            "(\[edwiser\-form[ ]+id\=[\'\"’‘“”]([0-9]+)[\'\"’‘“”]\])",
+            $text,
+            $tags
+        );
+        if ($tags[0]) {
+            $css = '';
+            if (!isset($CFG->formsloaded)) {
+                $themedependentcss = '/local/edwiserform/style/common_' . $PAGE->theme->name . '.css';
+                if (file_exists($CFG->dirroot . $themedependentcss)) {
+                    $css = '<link rel="stylesheet" type="text/css" href="' . $CFG->wwwroot . $themedependentcss . '">';
+                }
+                $CFG->formsloaded = true;
+            }
+            $stringmanager = get_string_manager();
+            $strings = $stringmanager->load_component_strings('local_edwiserform', 'en');
+            $PAGE->requires->strings_for_js(array_keys($strings), 'local_edwiserform');
+            $PAGE->requires->js(new \moodle_url('https://www.google.com/recaptcha/api.js'));
+            $sitekey = get_config('local_edwiserform', 'google_recaptcha_sitekey');
+            if (trim($sitekey) == '') {
+                $sitekey = 'null';
+            }
+            $PAGE->requires->js_call_amd('local_edwiserform/render_form', 'init', array($sitekey));
+            $PAGE->requires->data_for_js('sitekey', $sitekey);
+            $tags = $this->filter_tags($tags);
+            foreach ($tags as $form) {
+                $container = "<div class='edwiserform-root-container'>
+                    " . $css . "
+                    <div class='edwiserform-wrap-container'>
+                    <input type='hidden' class='id' value='" . $form->id . "'>
+                    <form class='edwiserform-container' action='' method='post'></form>
+                    </div>
+                </div>";
+                $text = str_replace($form->tag, $container, $text);
+            }
+        }
+        return $text;
+    }
+}
+
+```
+
+### `./classes/text_filter.php`
+
+```php
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace filter_edwiserformlink;
+
+/**
+ * Class text_filter
+ *
+ * @package    filter_edwiserformlink
+ * @copyright  2024 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class text_filter extends \moodle_text_filter {
+    use CommonFilterTrait;
+}
+
+```
+
+### `./.cursor/rules/mdc-rules-organization.md`
+
+```markdown
+---
+description: Instructs Cursor to always create new MDC rules in .cursor/rules as separate files.
+globs: []
+alwaysApply: true
+---
+
+# MDC Rules Organization
+
+## Rule Creation Guidelines
+
+When creating new MDC (Model Context) rules for this project:
+
+1. **Location**: Always create new MDC rules in the `.cursor/rules/` folder
+2. **File Structure**: Each rule should be a separate file with a descriptive name
+3. **Naming Convention**: Use kebab-case for file names (e.g., `api-documentation.md`, `code-review-standards.md`)
+4. **File Extension**: Use `.md` extension for all rule files
+5. **Content Format**: Write rules in clear, actionable language with specific instructions
+
+## File Organization
+
+- Keep related rules together but separate
+- Use descriptive file names that clearly indicate the rule's purpose
+- Avoid creating monolithic rule files - prefer multiple focused files
+- Consider grouping related rules in subdirectories if the rules folder grows large
+
+## Example Rule Structure
+
+```markdown
+# Rule Name
+
+## Purpose
+Brief description of what this rule accomplishes
+
+## Instructions
+Specific, actionable instructions for the AI
+
+## Examples
+Concrete examples of how to apply the rule
+
+## Exceptions
+Any cases where this rule doesn't apply (if applicable)
+```
+
+## Maintenance
+
+- Review and update rules regularly
+- Remove obsolete rules
+- Consolidate overlapping rules when appropriate
+- Keep rules focused and specific to avoid conflicts 
+```
+
+### `./filter.php`
+
+```php
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * This filter provides automatic linking to
+ * Form builder entries, aliases and categories when
+ * found inside every Moodle text.
+ *
+ * @package     filter_edwiserformlink
+ * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author      Yogesh Shirsath
+ */
+
+use filter_edwiserformlink\CommonFilterTrait;
+
+if ($CFG->branch > '404') { // Moodle 4.5 and newer
+    class_alias('\filter_edwiserpbf\text_filter', 'filter_edwiserpbf');
+} else {
+    class filter_edwiserformlink extends moodle_text_filter {
+        use CommonFilterTrait;
+    }
+}
+
+```
+
+### `./lang/en/filter_edwiserformlink.php`
+
+```php
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * This filter provides automatic linking to
+ * Form builder entries, aliases and categories when
+ * found inside every Moodle text.
+ *
+ * @package     filter_edwiserformlink
+ * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author      Yogesh Shirsath
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+$string['filtername'] = "Edwiser Forms Linker";
+$string['pluginname'] = "Edwiser Forms Link";
+
+```
+
+### `./README.md`
+
+```markdown
+This filter is required for the Edwiser Forms Free plugin. 
+
+Edwiser Forms is your go-to Forms solution for your Moodle. 
+With Edwiser Forms, you can create multipurpose forms in Moodle, without knowing a single line of code.
+
+
+STEPS FOR INSTALLATION
+1 - Install Edwiser Forms Free Plugin;
+2 - Install (this filter plugin) Edwiser Forms Embedder Plugin;
+
+Follow below mentioned guide for instructions.
+
+Installation Guide & Documentation
+==================================
+You can view the documentation by following this link https://docs.google.com/document/d/1DfNx1x6en2tAwExv7oCCBbpLbjHP9qcUCedbPe_wlAc/edit?usp=sharing
+
+Version :
+v1.0.0 - Plugin Released
+v1.0.1 - Bug Fixes
+
+
+Plugin Description
+==================
+
+*Edwiser Forms comes packed with the following features:
+*Drag & Drop Form Builder(Pro Feature)
+*Ready to use Form Templates
+*Conditional Logic
+*Multi-page Forms(Pro Feature)
+*Responsive Mobile Layouts
+*Instant Notifications
+*Entry Management
+*Easy to Embed
+*Translation Ready
+*Spam Protection
+*File Uploads(Pro Feature)
+*20+ Ready to Use Form Fields(Pro Feature)
+
+
+-Responsive Mobile Layouts: Edwiser Forms is completely responsive and can be displayed seamlessly across devices of varying widths or layouts. Users can customize the width of form fields as well. 
+
+-Easy to Embed: Using shortcodes, you can embed the form anywhere you want, on your Moodle website, using HTML blocks. 
+
+-Drag & Drop Form Builder(Pro Feature): The drag & drop form builder further simplifies your form creation experience. You can just drag & drop form elements wherever you like. 
+
+-Multi-page Forms(Pro Feature): In case of lengthy forms, you can use the Multipage Form feature available in the plugin, to split the forms into separate sections. For example, having two sections for personal and education details of the user.
+
+-Conditional Logic: In addition to the above, you can also create forms with an input-dependent workflow, thanks to Conditional Logic in Edwiser Forms.
+
+-Ready to use Form Templates: The Readymade Form templates like Simple Support Form, User Registration Form, Survey Form etc. can prove to be a real time-saver. You can either start from scratch or choose a template based on your form’s needs and build further. 
+
+-Entry Management: A robust Entry Management makes it easier for you to analyze, download, or even export this collected data in form of .csv files. 
+
+-Translation Ready: The labels and form fields can be translated to any language, and can also be updated based on the language being used on the Moodle website.
+
+-Spam Protection: A dependable Spam protection in place ensures the entries you receive are 100% genuine and correct. 
+
+-Instant Notifications: Get notified every time a user fills up your form. You can customize the notification mail the way you need.
+
+-File Uploads(Pro Feature): For applications where your users might have to upload documents, Edwiser Forms lets you upload PDFs, Word Docs, Text, Audio, Video and a lot more.
+
+You can also add custom colors and styling, decide the width of the form, and a lot more. All of this, without needing the help of any developer. 
+
+Edwiser Forms also has a Pro version: Edwiser Forms Pro, with additional premium features. Try Out Edwiser Forms Pro Now! - http://bit.ly/2EnkvCF
+
+
+```
+
+### `./version.php`
+
+```php
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * This filter provides automatic linking to
+ * Form builder entries, aliases and categories when
+ * found inside every Moodle text.
+ *
+ * @package     filter_edwiserformlink
+ * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author      Yogesh Shirsath
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+$plugin->version  = 2025021300;
+$plugin->requires = 2016052314;  // Requires this Moodle version.
+$plugin->release  = '2.0.3';
+$plugin->maturity = MATURITY_STABLE;
+$plugin->component= 'filter_edwiserformlink';
+
+// $plugin->dependencies = array('local_edwiserform' => 2017110800);
+
+```
+</file>
+
+<file path="createContext.js">
+/**
+ * AI Context Optimization : Comprehensive Context Creation Tool
+ * ------------------------------
+ * A tool for generating comprehensive code context for AI assistants while minimizing token costs.
+ *
+ * This script creates a single markdown file containing your entire codebase structure and content,
+ * which can be pasted directly into AI chat interfaces (like Cursor's MAX models) to provide
+ * complete project context in one go, eliminating the need for multiple expensive tool calls.
+ *
+ * BENEFITS:
+ * - Save money: Reduces cost significantly when using MAX models (avoiding per file read)
+ * - Better context: Provides the AI with a complete view of your project at once
+ * - Privacy control: Only includes files you want, respecting custom exclusions
+ * - Performance stats: Shows token counts, model compatibility, and cost estimations
+ *
+ * USAGE:
+ * 1. Configure the excludePaths, includePaths, and includeExtensions in the config object below
+ * 2. Run: node createContext.js
+ * 3. Copy the generated context.md into your AI chat
+ * 4. Use a custom mode with just grep and edit tools enabled (see README)
+ *
+ * Created by: Ghazi Khan (mgks.dev)
+ * Version: 0.2.1
+ *
+ * CHANGELOG:
+ * - v0.2.1: (2025-04-22)
+ *   - Revised `find` command logic to previous with 0.2.0 improvements, it basically made the script useless.
+* - v0.2.0: (2025-04-22)
+ *   - Updated model context window sizes based on latest available information.
+ *   - Re-included Claude 3.7 Sonnet/MAX names as requested.
+ *   - Fixed recursive exclusion using improved `find` command logic.
+ *   - Removed redundant helper functions (`shouldExclude`, `shouldInclude`).
+ *   - Updated model context limits and warning threshold (70%).
+ *   - Enhanced configuration defaults (more exclusions/extensions).
+ *   - Improved statistics reporting and cost comparison.
+ *   - Added debug flag, better error handling, and code quality improvements.
+ *   - Refined language detection and token estimation.
+ *   - Added project name and timestamp to output.
+ * - v0.1.0: Initial release.
+ */
+⋮----
+// Define the output file name outside the config object so we can reference it
+⋮----
+// CONFIGURATION - Edit these variables as needed
+⋮----
+// Output file name
+⋮----
+// Directories and files to include (empty array means include everything not excluded)
+// Uses simple path matching relative to root. Applied *after* path exclusions but *before* extension filtering.
+⋮----
+// Directories, files, or simple patterns (*.ext) to exclude recursively.
+⋮----
+// Add project-specific exclusions
+⋮----
+// File extensions to include. Files NOT matching these will be completely ignored (not in tree or content).
+// Empty array means include all files found after path exclusions.
+⋮----
+// Add other extensions you want included
+⋮----
+// Maximum file size to include in content (in KB, to prevent massive files)
+⋮----
+// Set to true to see the generated `find` command
+⋮----
+// Generate the directory tree using find command with improved recursive exclusions
+function generateDirectoryTree() {
+⋮----
+const excludePatterns = config.excludePaths.map(p => {
+const escapedPath = p.replace(/([*?"'\[\]{}() ])/g, '\\$1');
+if (escapedPath.includes('/')) {
+const cleanedPath = escapedPath.startsWith('./') ? escapedPath : `./${escapedPath}`;
+⋮----
+} else if (escapedPath.startsWith('*.')) {
+⋮----
+} else if (escapedPath.includes('.')) {
+⋮----
+}).filter(Boolean);
+⋮----
+findCommand += ` -not \\( ${excludePatterns.join(' -o ')} \\)`;
+⋮----
+// Apply includePaths filtering via find if specified
+⋮----
+const includeArgs = config.includePaths.map(dir => {
+const cleanedPath = dir.startsWith('./') ? dir : `./${dir}`;
+// Use -path for include patterns - match files *within* these paths
+return `-path "${cleanedPath}/*"`; // Changed to match files *inside* the path
+}).join(' -o ');
+// Add check for files directly matching includePath if it's a file path itself
+const includeFilesArgs = config.includePaths.map(dir => {
+if (!dir.includes('*') && fs.existsSync(dir) && fs.statSync(dir).isFile()) {
+⋮----
+}).filter(Boolean).join(' -o ');
+⋮----
+console.log("DEBUG: Running find command:");
+console.log(findCommand);
+⋮----
+const output = execSync(findCommand, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+return output.split('\n').filter(line => line.trim() !== '');
+⋮----
+console.error(`\n❌ Error generating directory tree with find command.`);
+if (config.debug) { console.error(`Command attempted: ${error.cmd || findCommand}`); }
+if (error.stderr) { console.error('Stderr:', error.stderr); }
+console.error('Error:', error.message);
+⋮----
+// Helper function to check if file should be included based on extension
+// This is now used for the primary filtering step AFTER find returns results
+function shouldIncludeBasedOnExtension(filePath) {
+// If includeExtensions is empty, always include (matches original intent)
+⋮----
+const ext = path.extname(filePath).toLowerCase();
+return config.includeExtensions.includes(ext);
+⋮----
+// Helper function to get file size in KB
+function getFileSizeInKB(filePath) {
+⋮----
+const stats = fs.statSync(filePath);
+⋮----
+// Helper function to estimate token count based on text length
+function estimateTokenCount(text, fileExt = '') {
+⋮----
+return Math.ceil(text.length * tokensPerChar);
+⋮----
+// Helper function to determine language from file extension for markdown code blocks
+function getLanguageFromExt(filePath) {
+⋮----
+// Generate a visual tree structure from file paths
+function generateTreeStructure(files) {
+const cleanPaths = files.map(file => file.startsWith('./') ? file.substring(2) : file);
+⋮----
+const parts = file.split('/');
+⋮----
+current.files.push(part);
+⋮----
+function printTree(node, prefix = '', isLast = true, path = '') {
+⋮----
+const dirs = Object.keys(node.dirs).sort();
+dirs.forEach((dir, index) => {
+⋮----
+result += printTree(node.dirs[dir], `${prefix}${isLast && isLastDir ? '    ' : '│   '}`, isLastDir);
+⋮----
+node.files.sort();
+node.files.forEach((file, index) => {
+⋮----
+return printTree(tree);
+⋮----
+// Clean file path (remove ./ prefix)
+function cleanPath(filePath) {
+return filePath.startsWith('./') ? filePath.substring(2) : filePath;
+⋮----
+// Format a file size for display
+function formatFileSize(sizeInKB) {
+⋮----
+return `${sizeInKB.toFixed(2)} KB`;
+⋮----
+return `${(sizeInKB / 1024).toFixed(2)} MB`;
+⋮----
+// Format number with commas for readability
+function formatNumber(num) {
+return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+⋮----
+// *** MODIFIED FUNCTION ***
+// Generate the context.md file
+function generateContextFile() {
+console.log("🔍 Finding relevant files (excluding paths)...");
+// Step 1: Get all files matching path exclusions/inclusions
+const initialFiles = generateDirectoryTree();
+⋮----
+// Step 2: Filter this list based on included extensions
+console.log(`   Found ${initialFiles.length} files initially. Filtering by extension...`);
+const filesToProcess = initialFiles.filter(filePath => shouldIncludeBasedOnExtension(filePath));
+⋮----
+console.log("\n⚠️ No files found matching the path *and* extension criteria. Check your excludePaths and includeExtensions in the config.");
+⋮----
+console.log(`   ${filesToProcess.length} files match extension criteria. Processing...`);
+⋮----
+// Step 3: Use the final 'filesToProcess' list for everything below
+⋮----
+totalFilesFoundInitial: initialFiles.length, // How many find returned
+totalFilesProcessed: filesToProcess.length, // How many we are using
+⋮----
+skippedFileContents: 0, // Will now only be for size limit
+⋮----
+// skippedDueToType is no longer applicable here
+⋮----
+totalOriginalSizeKB: 0, // Size of files *processed*
+filesByType: {},        // Types of files *processed*
+tokensPerFileType: {}   // Tokens for files *processed*
+⋮----
+const projectName = path.basename(process.cwd());
+let outputContent = `# Project Context: ${projectName}\n\nGenerated: ${new Date().toISOString()}\n\n`;
+⋮----
+console.log("🌳 Generating directory structure...");
+⋮----
+// Generate tree ONLY from the final filtered list
+outputContent += generateTreeStructure(filesToProcess);
+⋮----
+console.log("📄 Processing file contents...");
+⋮----
+// Iterate ONLY over the final filtered list
+⋮----
+const cleanFilePath = filePath; // Path is already like ./src/file.js
+const fileExt = path.extname(filePath).toLowerCase();
+⋮----
+// Track stats only for processed files
+const currentFileSizeKB = getFileSizeInKB(filePath);
+⋮----
+// *** The check for shouldIncludeBasedOnExtension is ALREADY DONE ***
+// We only need to check for size limit now
+⋮----
+// Still mention the file, but only note the size skip reason
+outputContent += `### \`${cleanFilePath}\`\n\n*File content skipped: Size ${formatFileSize(currentFileSizeKB)} exceeds ${config.maxFileSizeKB} KB limit.*\n\n`;
+⋮----
+// Include content (file passed extension and size checks)
+⋮----
+const fileContent = fs.readFileSync(filePath, 'utf8');
+const language = getLanguageFromExt(filePath);
+⋮----
+const fileTokens = estimateTokenCount(fileContent, fileExt);
+⋮----
+outputContent += fileContent.trim() ? fileContent : '[EMPTY FILE]';
+⋮----
+// This file *should* have been included, but reading failed
+stats.skippedFileContents++; // Count as skipped due to error
+⋮----
+console.warn(`Warning: Could not read file ${cleanFilePath}: ${error.message}`);
+⋮----
+const structureOnlyContent = outputContent.replace(/```[\s\S]*?```/g, '');
+const structureTokens = estimateTokenCount(structureOnlyContent, '.md');
+⋮----
+fs.writeFileSync(config.outputFile, outputContent);
+console.log(`💾 Writing output to ${config.outputFile}...`);
+⋮----
+const outputFileSizeKB = getFileSizeInKB(config.outputFile);
+⋮----
+console.log("\n" + "=".repeat(60));
+console.log(`📊 CONTEXT FILE STATISTICS`);
+console.log("=".repeat(60));
+console.log(`📝 Content Summary:`);
+console.log(`  • Context file created: ${config.outputFile}`);
+console.log(`  • File size: ${formatFileSize(outputFileSizeKB)}`);
+console.log(`  • Estimated tokens: ~${formatNumber(stats.totalTokens)}`);
+console.log(`  • Characters (included content): ${formatNumber(stats.totalCharacters)}`);
+console.log(`  • Markdown overhead: ~${formatNumber(structureTokens)} tokens`);
+⋮----
+console.log(`\n📁 File Processing:`);
+console.log(`  • Files found by path search: ${stats.totalFilesFoundInitial}`);
+console.log(`  • Files included (matching extensions): ${stats.totalFilesProcessed}`);
+console.log(`  • File content included in output: ${stats.includedFileContents}`);
+console.log(`  • File content skipped (size limit): ${stats.skippedDueToSize}`);
+// Removed skipped by type line
+console.log(`  • Total size of included files: ${formatFileSize(stats.totalOriginalSizeKB)}`);
+⋮----
+console.log(`\n📊 File Types Distribution (Included Files):`);
+const sortedFileTypes = Object.entries(stats.tokensPerFileType)
+.filter(([, tokens]) => tokens > 0)
+.sort((a, b) => b[1] - a[1])
+.slice(0, 8);
+⋮----
+sortedFileTypes.forEach(([ext, tokens]) => {
+const totalFoundOfType = stats.filesByType[ext] || 0; // Count of this type among processed files
+console.log(`  • ${ext || '(no ext)'}: ~${formatNumber(tokens)} tokens (${totalFoundOfType} files)`);
+⋮----
+console.log(`\n📈 Token Usage by AI Model:`);
+⋮----
+models.forEach(model => {
+const percentUsed = Math.min(100, (stats.totalTokens / model.limit) * 100);
+⋮----
+console.log(`  ${statusSymbol} ${model.name}: ${percentUsed.toFixed(1)}% used (~${formatNumber(stats.totalTokens)} / ${formatNumber(model.limit)} tokens)`);
+⋮----
+console.log("\n💰 Cost Comparison (Illustrative):");
+⋮----
+{ name: "Cursor MAX (File Reads)", cost: Math.max(0.05, 0.05 * stats.includedFileContents) },
+⋮----
+costs.forEach(model => { console.log(`  • ${model.name}: ~$${model.cost.toFixed(4)}`); });
+⋮----
+const toolCallCost = Math.max(0.05, 0.05 * stats.includedFileContents);
+⋮----
+console.log(`\n💸 Potential Tool Call Savings (Example @ $0.05/call):`);
+console.log(`  • Est. Cost w/ File Reads: ~$${toolCallCost.toFixed(2)} (${stats.includedFileContents} included files)`);
+console.log(`  • Est. Cost w/ This Script: ~$${scriptCost.toFixed(2)} (1 prompt)`);
+console.log(`  • Potential Savings: ~$${savingsAmount.toFixed(2)} (${savingsPercent.toFixed(0)}%)`);
+⋮----
+console.log(`✨ Done! Copy the contents of ${config.outputFile} into your AI chat.`);
+console.log("=".repeat(60) + "\n");
+⋮----
+// Execute the main function
+generateContextFile();
+</file>
+
+<file path="classes/text_filter.php">
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+⋮----
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+⋮----
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+⋮----
+namespace filter_edwiserformlink;
+⋮----
+/**
+ * Class text_filter
+ *
+ * @package    filter_edwiserformlink
+ * @copyright  2024 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class text_filter extends \moodle_text_filter {
+</file>
+
+<file path="qaconfig">
+#DO NOT PASS WILDCARD FILE NAMES. PHPCPD_IGNORE_FILES accepts only FILE NAMES. 
+
+#Whether to enable static analyzer for this repo. When set to 1, checks are enabled and all static analyzers are executed.
+#When set to 0, no static analyzer is not exeucted for this repo
+ENABLE_ALL_CHECKS="0"
+
+#When this parameter is not provided or blank, it takes PSR2 standard by default
+PHPCS_CODING_STANDARD="moodle"
+
+#Give file names only. Do not include directory separator. Path of the file does not matter.So provide comma separated file names
+PHPCPD_IGNORE_FILES=""
+
+#Provide Relative Paths of files and folders to be ignored for PHPMD. Accepts Comma Separated List
+PHPMD_IGNORE_FILES=""
+
+#Provide Relative Paths of files and folders to be ignored for PHPCS, Aceepts Comma separated list
+PHPCS_IGNORE_FILES=""
+</file>
+
+<file path="lang/en/filter_edwiserformlink.php">
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+⋮----
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+⋮----
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+⋮----
+/**
+ * This filter provides automatic linking to
+ * Form builder entries, aliases and categories when
+ * found inside every Moodle text.
+ *
+ * @package     filter_edwiserformlink
+ * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author      Yogesh Shirsath
+ */
+</file>
+
+<file path="README.md">
+This filter is required for the Edwiser Forms Free plugin. 
+
+Edwiser Forms is your go-to Forms solution for your Moodle. 
+With Edwiser Forms, you can create multipurpose forms in Moodle, without knowing a single line of code.
+
+
+STEPS FOR INSTALLATION
+1 - Install Edwiser Forms Free Plugin;
+2 - Install (this filter plugin) Edwiser Forms Embedder Plugin;
+
+Follow below mentioned guide for instructions.
+
+Installation Guide & Documentation
+==================================
+You can view the documentation by following this link https://docs.google.com/document/d/1DfNx1x6en2tAwExv7oCCBbpLbjHP9qcUCedbPe_wlAc/edit?usp=sharing
+
+Version :
+v1.0.0 - Plugin Released
+v1.0.1 - Bug Fixes
+
+
+Plugin Description
+==================
+
+*Edwiser Forms comes packed with the following features:
+*Drag & Drop Form Builder(Pro Feature)
+*Ready to use Form Templates
+*Conditional Logic
+*Multi-page Forms(Pro Feature)
+*Responsive Mobile Layouts
+*Instant Notifications
+*Entry Management
+*Easy to Embed
+*Translation Ready
+*Spam Protection
+*File Uploads(Pro Feature)
+*20+ Ready to Use Form Fields(Pro Feature)
+
+
+-Responsive Mobile Layouts: Edwiser Forms is completely responsive and can be displayed seamlessly across devices of varying widths or layouts. Users can customize the width of form fields as well. 
+
+-Easy to Embed: Using shortcodes, you can embed the form anywhere you want, on your Moodle website, using HTML blocks. 
+
+-Drag & Drop Form Builder(Pro Feature): The drag & drop form builder further simplifies your form creation experience. You can just drag & drop form elements wherever you like. 
+
+-Multi-page Forms(Pro Feature): In case of lengthy forms, you can use the Multipage Form feature available in the plugin, to split the forms into separate sections. For example, having two sections for personal and education details of the user.
+
+-Conditional Logic: In addition to the above, you can also create forms with an input-dependent workflow, thanks to Conditional Logic in Edwiser Forms.
+
+-Ready to use Form Templates: The Readymade Form templates like Simple Support Form, User Registration Form, Survey Form etc. can prove to be a real time-saver. You can either start from scratch or choose a template based on your form’s needs and build further. 
+
+-Entry Management: A robust Entry Management makes it easier for you to analyze, download, or even export this collected data in form of .csv files. 
+
+-Translation Ready: The labels and form fields can be translated to any language, and can also be updated based on the language being used on the Moodle website.
+
+-Spam Protection: A dependable Spam protection in place ensures the entries you receive are 100% genuine and correct. 
+
+-Instant Notifications: Get notified every time a user fills up your form. You can customize the notification mail the way you need.
+
+-File Uploads(Pro Feature): For applications where your users might have to upload documents, Edwiser Forms lets you upload PDFs, Word Docs, Text, Audio, Video and a lot more.
+
+You can also add custom colors and styling, decide the width of the form, and a lot more. All of this, without needing the help of any developer. 
+
+Edwiser Forms also has a Pro version: Edwiser Forms Pro, with additional premium features. Try Out Edwiser Forms Pro Now! - http://bit.ly/2EnkvCF
+</file>
+
+<file path="classes/CommonFilterTrait.php">
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+⋮----
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+⋮----
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+⋮----
+namespace filter_edwiserformlink;
+⋮----
+/**
+ * Class CommonFilterTrait
+ *
+ * @package    filter_edwiserformlink
+ * @copyright  2024 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+trait CommonFilterTrait {
+/**
+     * Filter tags and convert to object
+     * @param  array $tags Tags array
+     * @return array       Forms array
+     */
+private function filter_tags($tags) {
+⋮----
+$form = new \stdClass;
+⋮----
+/**
+     * Function filter edwiser form tags in content
+     *
+     * @param  string $text    HTML content to process
+     * @param  array  $options options passed to the filters
+     * @return string
+     */
+public function filter($text, array $options = array()) {
+⋮----
+$strings = $stringmanager->load_component_strings('local_edwiserform', 'en');
+$PAGE->requires->strings_for_js(array_keys($strings), 'local_edwiserform');
+$PAGE->requires->js(new \moodle_url('https://www.google.com/recaptcha/api.js'));
+⋮----
+$PAGE->requires->js_call_amd('local_edwiserform/render_form', 'init', array($sitekey));
+$PAGE->requires->data_for_js('sitekey', $sitekey);
+$tags = $this->filter_tags($tags);
+</file>
+
+<file path="filter.php">
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+⋮----
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+⋮----
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+⋮----
+/**
+ * This filter provides automatic linking to
+ * Form builder entries, aliases and categories when
+ * found inside every Moodle text.
+ *
+ * @package     filter_edwiserformlink
+ * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author      Yogesh Shirsath
+ */
+⋮----
+use filter_edwiserformlink\CommonFilterTrait;
+⋮----
+if ($CFG->branch > '404') { // Moodle 4.5 and newer
+⋮----
+class filter_edwiserformlink extends moodle_text_filter {
+</file>
+
+<file path="version.php">
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+⋮----
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+⋮----
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+⋮----
+/**
+ * This filter provides automatic linking to
+ * Form builder entries, aliases and categories when
+ * found inside every Moodle text.
+ *
+ * @package     filter_edwiserformlink
+ * @copyright   2018 WisdmLabs <support@wisdmlabs.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author      Yogesh Shirsath
+ */
+⋮----
+$plugin->requires = 2016052314;  // Requires this Moodle version.
+⋮----
+// $plugin->dependencies = array('local_edwiserform' => 2017110800);
+</file>
+
+</files>
